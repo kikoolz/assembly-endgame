@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { languages } from "./languages";
 import { clsx } from "clsx";
+import { getFarewellText } from "./utils";
 
 export default function AssemblyEndgame() {
   const [currentWord, setCurrentWord] = useState("react");
@@ -15,7 +16,11 @@ export default function AssemblyEndgame() {
     .every((letter) => guessedLetters.includes(letter));
   const isGameLost = wrongGuessCount >= languages.length - 1;
   const isGameOver = isGameWon || isGameLost;
-  console.log(isGameWon);
+  const lastGuessedLetter = guessedLetters[guessedLetters.length - 1];
+  const isLastGuessCorrect =
+    lastGuessedLetter && !currentWord.includes(lastGuessedLetter);
+
+  console.log(isLastGuessCorrect);
 
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
@@ -50,7 +55,6 @@ export default function AssemblyEndgame() {
       correct: isCorrect,
       wrong: isWrong,
     });
-    console.log(className);
 
     return (
       <button
@@ -74,7 +78,8 @@ export default function AssemblyEndgame() {
   });
 
   const gameStatus = () => {
-    if (!isGameOver) return null;
+    if (!isGameOver && isLastGuessCorrect)
+      return <p className="farewell-message">"Bye!"</p>;
     if (isGameWon) {
       return (
         <>
@@ -84,12 +89,14 @@ export default function AssemblyEndgame() {
       );
     }
 
-    return (
-      <>
-        <h2>Game Over!</h2>
-        <p>You lose! Better start learning Assembly😭</p>
-      </>
-    );
+    if (isGameLost) {
+      return (
+        <>
+          <h2>Game Over!</h2>
+          <p>You lose! Better start learning Assembly😭</p>
+        </>
+      );
+    }
   };
 
   return (
@@ -102,7 +109,11 @@ export default function AssemblyEndgame() {
         </p>
       </header>
       <section
-        className={clsx("game-status", { won: isGameWon, lost: isGameLost })}
+        className={clsx("game-status", {
+          won: isGameWon,
+          lost: isGameLost,
+          farewell: !isGameOver && isLastGuessCorrect,
+        })}
       >
         {gameStatus()}
       </section>
