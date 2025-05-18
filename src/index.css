@@ -50,7 +50,7 @@ section.game-status {
 .game-status.lost {
   background-color: #db1515;
 }
-section.game-status.farewell{
+section.game-status.farewell {
   background-color: #7a5ea7;
   border: 1px dashed #323232;
 }
@@ -156,4 +156,9 @@ button.new-game {
 .key.wrong {
   background-color: #f44336;
   color: white;
+}
+
+.key:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
