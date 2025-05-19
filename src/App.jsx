@@ -61,6 +61,8 @@ export default function AssemblyEndgame() {
         className={className}
         onClick={() => handleGuess(letter)}
         key={letter}
+        aria-disabled={guessedLetters.includes(letter)}
+        aria-label={`Letter ${letter}`}
         disabled={isGameOver}
       >
         {letter.toUpperCase()}
@@ -114,6 +116,8 @@ export default function AssemblyEndgame() {
         </p>
       </header>
       <section
+        aria-live="polite"
+        role="status"
         className={clsx("game-status", {
           won: isGameWon,
           lost: isGameLost,
@@ -124,6 +128,17 @@ export default function AssemblyEndgame() {
       </section>
       <section className="language-chips">{languageElements}</section>
       <section className="word">{letterElements}</section>
+      <section className="sr-only" aria-live="polite" role="status">
+        <p>
+          Current word:{" "}
+          {currentWord
+            .split("")
+            .map((letter) =>
+              guessedLetters.includes(letter) ? letter + "." : "blank."
+            )
+            .join(" ")}
+        </p>
+      </section>
       <section className="keyboard">{keyboardElements}</section>
       {isGameOver && <button className="new-game">New Game</button>}
     </main>
