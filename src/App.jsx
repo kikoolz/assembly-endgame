@@ -30,8 +30,8 @@ export default function AssemblyEndgame() {
   }
 
   function handleNewGame() {
-    setGuessedLetters([]);
     setCurrentWord(getRandomWord());
+    setGuessedLetters([]);
   }
 
   const languageElements = languages.map((lang, index) => {
