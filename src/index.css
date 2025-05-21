@@ -50,9 +50,18 @@ section.game-status {
 .game-status.lost {
   background-color: #db1515;
 }
+section.game-status.farewell {
+  background-color: #7a5ea7;
+  border: 1px dashed #323232;
+}
 
 section.game-status > p {
   margin: 5px;
+}
+
+section.game-status > p.farewell-message {
+  font-style: italic;
+  font-weight: 400;
 }
 
 section.game-status > h2 {
@@ -147,4 +156,21 @@ button.new-game {
 .key.wrong {
   background-color: #f44336;
   color: white;
+}
+
+.key:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

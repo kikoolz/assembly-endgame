@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { languages } from "./languages";
 import { clsx } from "clsx";
+import { getFarewellText } from "./utils";
 
 export default function AssemblyEndgame() {
   const [currentWord, setCurrentWord] = useState("react");
   const [guessedLetters, setGuessedLetters] = useState([]);
 
+  const numGuessesLeft = languages.length - 1;
   const wrongGuessCount = guessedLetters.reduce((count, letter) => {
     return currentWord.includes(letter) ? count : count + 1;
   }, 0);
@@ -13,9 +15,11 @@ export default function AssemblyEndgame() {
   const isGameWon = currentWord
     .split("")
     .every((letter) => guessedLetters.includes(letter));
-  const isGameLost = wrongGuessCount >= languages.length - 1;
+  const isGameLost = wrongGuessCount >= numGuessesLeft;
   const isGameOver = isGameWon || isGameLost;
-  console.log(isGameWon);
+  const lastGuessedLetter = guessedLetters[guessedLetters.length - 1];
+  const isLastGuessCorrect =
+    lastGuessedLetter && !currentWord.includes(lastGuessedLetter);
 
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
@@ -50,13 +54,15 @@ export default function AssemblyEndgame() {
       correct: isCorrect,
       wrong: isWrong,
     });
-    console.log(className);
 
     return (
       <button
         className={className}
         onClick={() => handleGuess(letter)}
         key={letter}
+        aria-disabled={guessedLetters.includes(letter)}
+        aria-label={`Letter ${letter}`}
+        disabled={isGameOver}
       >
         {letter.toUpperCase()}
       </button>
@@ -74,7 +80,12 @@ export default function AssemblyEndgame() {
   });
 
   const gameStatus = () => {
-    if (!isGameOver) return null;
+    if (!isGameOver && isLastGuessCorrect)
+      return (
+        <p className="farewell-message">
+          {getFarewellText(languages[wrongGuessCount - 1].name)}
+        </p>
+      );
     if (isGameWon) {
       return (
         <>
@@ -84,12 +95,14 @@ export default function AssemblyEndgame() {
       );
     }
 
-    return (
-      <>
-        <h2>Game Over!</h2>
-        <p>You lose! Better start learning Assembly😭</p>
-      </>
-    );
+    if (isGameLost) {
+      return (
+        <>
+          <h2>Game Over!</h2>
+          <p>You lose! Better start learning Assembly😭</p>
+        </>
+      );
+    }
   };
 
   return (
@@ -102,12 +115,37 @@ export default function AssemblyEndgame() {
         </p>
       </header>
       <section
-        className={clsx("game-status", { won: isGameWon, lost: isGameLost })}
+        aria-live="polite"
+        role="status"
+        className={clsx("game-status", {
+          won: isGameWon,
+          lost: isGameLost,
+          farewell: !isGameOver && isLastGuessCorrect,
+        })}
       >
         {gameStatus()}
       </section>
       <section className="language-chips">{languageElements}</section>
       <section className="word">{letterElements}</section>
+
+      {/* Combined visually-hidden aria-live region for status updates */}
+      <section className="sr-only" aria-live="polite" role="status">
+        <p>
+          {currentWord.includes(lastGuessedLetter)
+            ? `Correct! The letter ${lastGuessedLetter} is in the word.`
+            : `Sorry, the letter ${lastGuessedLetter} is not in the word.`}
+          You have {numGuessesLeft} attempts left.
+        </p>
+        <p>
+          Current word:
+          {currentWord
+            .split("")
+            .map((letter) =>
+              guessedLetters.includes(letter) ? letter + "." : "blank."
+            )
+            .join(" ")}
+        </p>
+      </section>
       <section className="keyboard">{keyboardElements}</section>
       {isGameOver && <button className="new-game">New Game</button>}
     </main>
