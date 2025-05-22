@@ -76,10 +76,14 @@ export default function AssemblyEndgame() {
 
   const letterElements = currentWord.split("").map((letter, index) => {
     const isGuessed = guessedLetters.includes(letter);
+    const revealWord = isGameLost || isGuessed;
+    const letterClassName = clsx(
+      isGameLost && !guessedLetters.includes(letter) && "missed-letter"
+    );
 
     return (
-      <span className="letter" key={index}>
-        {isGuessed ? letter.toUpperCase() : " "}
+      <span className={letterClassName} key={index}>
+        {revealWord ? letter.toUpperCase() : " "}
       </span>
     );
   });
