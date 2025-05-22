@@ -480,5 +480,5 @@ export const words = [
   "wrong",
   "yellow",
   "yesterday",
-  "young",
+  "young"
 ];
