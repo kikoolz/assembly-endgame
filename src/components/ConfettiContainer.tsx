@@ -1,18 +1,14 @@
-import Confetti from "react-confetti"
-import type {JSX} from 'react'
+import Confetti from "react-confetti";
+import type { JSX } from "react";
 
-
-export default function ConfettiContainer({ isGameWon }):JSX.Element | null {
-    if (!isGameWon) {
-        return null
-    }
-    else {
-        return (
-            <Confetti
-                recycle={false}
-                numberOfPieces={1000}
-            />
-        )
-    }
-
+export default function ConfettiContainer({
+  isGameWon,
+}: {
+  isGameWon: boolean;
+}): JSX.Element | null {
+  if (!isGameWon) {
+    return null;
+  } else {
+    return <Confetti recycle={false} numberOfPieces={1000} />;
+  }
 }
